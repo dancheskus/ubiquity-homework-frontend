@@ -17,9 +17,9 @@ export type Scalars = {
 export type Mutation = {
   __typename?: 'Mutation';
   createTodoItem?: Maybe<TodoItem>;
-  createTodoList?: Maybe<TodoList>;
-  createUser?: Maybe<User>;
-  createWorkspace?: Maybe<Workspace>;
+  createTodoList: TodoList;
+  createUser: User;
+  createWorkspace: Workspace;
   deleteTodoItem?: Maybe<TodoItem>;
   deleteTodoList?: Maybe<TodoList>;
   deleteWorkspace?: Maybe<Workspace>;
@@ -87,8 +87,14 @@ export type MutationUpdateWorkspaceArgs = {
 
 export type Query = {
   __typename?: 'Query';
+  todoLists: Array<TodoList>;
   user?: Maybe<User>;
   users: Array<User>;
+};
+
+
+export type QueryTodoListsArgs = {
+  workspaceId: Scalars['String'];
 };
 
 
@@ -118,7 +124,7 @@ export type TodoList = {
 export type User = {
   __typename?: 'User';
   id?: Maybe<Scalars['String']>;
-  workspaces: Array<Maybe<Workspace>>;
+  workspaces: Array<Workspace>;
 };
 
 export type Workspace = {
@@ -127,7 +133,7 @@ export type Workspace = {
   isShared: Scalars['Boolean'];
   ownerId: Scalars['String'];
   title: Scalars['String'];
-  todoLists: Array<Maybe<TodoList>>;
+  todoLists: Array<TodoList>;
 };
 
 export type GetUserQueryVariables = Exact<{
@@ -140,10 +146,10 @@ export type GetUserQuery = (
   & { user?: Maybe<(
     { __typename?: 'User' }
     & Pick<User, 'id'>
-    & { workspaces: Array<Maybe<(
+    & { workspaces: Array<(
       { __typename?: 'Workspace' }
       & Pick<Workspace, 'id' | 'title' | 'isShared'>
-    )>> }
+    )> }
   )> }
 );
 
@@ -163,10 +169,10 @@ export type CreateUserMutationVariables = Exact<{ [key: string]: never; }>;
 
 export type CreateUserMutation = (
   { __typename?: 'Mutation' }
-  & { createUser?: Maybe<(
+  & { createUser: (
     { __typename?: 'User' }
     & Pick<User, 'id'>
-  )> }
+  ) }
 );
 
 export type CreateWorkspaceMutationVariables = Exact<{
@@ -176,18 +182,18 @@ export type CreateWorkspaceMutationVariables = Exact<{
 
 export type CreateWorkspaceMutation = (
   { __typename?: 'Mutation' }
-  & { createWorkspace?: Maybe<(
+  & { createWorkspace: (
     { __typename?: 'Workspace' }
     & Pick<Workspace, 'id' | 'title' | 'isShared' | 'ownerId'>
-    & { todoLists: Array<Maybe<(
+    & { todoLists: Array<(
       { __typename?: 'TodoList' }
       & Pick<TodoList, 'id' | 'title' | 'isLocked' | 'workspaceId'>
       & { todoItems: Array<Maybe<(
         { __typename?: 'TodoItem' }
         & Pick<TodoItem, 'id' | 'title' | 'description' | 'cost' | 'isCompleted' | 'todoListId'>
       )>> }
-    )>> }
-  )> }
+    )> }
+  ) }
 );
 
 export type DeleteWorkspaceMutationVariables = Exact<{
@@ -218,6 +224,19 @@ export type UpdateWorkspaceMutation = (
   )> }
 );
 
+export type GetTodoListsByWorkspaceQueryVariables = Exact<{
+  workspaceId: Scalars['String'];
+}>;
+
+
+export type GetTodoListsByWorkspaceQuery = (
+  { __typename?: 'Query' }
+  & { todoLists: Array<(
+    { __typename?: 'TodoList' }
+    & Pick<TodoList, 'id' | 'title' | 'isLocked'>
+  )> }
+);
+
 export type CreateTodoListMutationVariables = Exact<{
   todoListWorkspaceId: Scalars['String'];
   todoListTitle?: Maybe<Scalars['String']>;
@@ -226,10 +245,10 @@ export type CreateTodoListMutationVariables = Exact<{
 
 export type CreateTodoListMutation = (
   { __typename?: 'Mutation' }
-  & { createTodoList?: Maybe<(
+  & { createTodoList: (
     { __typename?: 'TodoList' }
     & Pick<TodoList, 'id' | 'title' | 'isLocked'>
-  )> }
+  ) }
 );
 
 export type DeleteTodoListMutationVariables = Exact<{
@@ -473,6 +492,35 @@ export function useUpdateWorkspaceMutation(baseOptions?: Apollo.MutationHookOpti
 export type UpdateWorkspaceMutationHookResult = ReturnType<typeof useUpdateWorkspaceMutation>;
 export type UpdateWorkspaceMutationResult = Apollo.MutationResult<UpdateWorkspaceMutation>;
 export type UpdateWorkspaceMutationOptions = Apollo.BaseMutationOptions<UpdateWorkspaceMutation, UpdateWorkspaceMutationVariables>;
+export const GetTodoListsByWorkspaceDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"GetTodoListsByWorkspace"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"workspaceId"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"todoLists"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"workspaceId"},"value":{"kind":"Variable","name":{"kind":"Name","value":"workspaceId"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"title"}},{"kind":"Field","name":{"kind":"Name","value":"isLocked"}}]}}]}}]} as unknown as DocumentNode;
+
+/**
+ * __useGetTodoListsByWorkspaceQuery__
+ *
+ * To run a query within a React component, call `useGetTodoListsByWorkspaceQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetTodoListsByWorkspaceQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetTodoListsByWorkspaceQuery({
+ *   variables: {
+ *      workspaceId: // value for 'workspaceId'
+ *   },
+ * });
+ */
+export function useGetTodoListsByWorkspaceQuery(baseOptions: Apollo.QueryHookOptions<GetTodoListsByWorkspaceQuery, GetTodoListsByWorkspaceQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetTodoListsByWorkspaceQuery, GetTodoListsByWorkspaceQueryVariables>(GetTodoListsByWorkspaceDocument, options);
+      }
+export function useGetTodoListsByWorkspaceLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetTodoListsByWorkspaceQuery, GetTodoListsByWorkspaceQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetTodoListsByWorkspaceQuery, GetTodoListsByWorkspaceQueryVariables>(GetTodoListsByWorkspaceDocument, options);
+        }
+export type GetTodoListsByWorkspaceQueryHookResult = ReturnType<typeof useGetTodoListsByWorkspaceQuery>;
+export type GetTodoListsByWorkspaceLazyQueryHookResult = ReturnType<typeof useGetTodoListsByWorkspaceLazyQuery>;
+export type GetTodoListsByWorkspaceQueryResult = Apollo.QueryResult<GetTodoListsByWorkspaceQuery, GetTodoListsByWorkspaceQueryVariables>;
 export const CreateTodoListDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"CreateTodoList"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"todoListWorkspaceId"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"todoListTitle"}},"type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"createTodoList"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"workspaceId"},"value":{"kind":"Variable","name":{"kind":"Name","value":"todoListWorkspaceId"}}},{"kind":"Argument","name":{"kind":"Name","value":"title"},"value":{"kind":"Variable","name":{"kind":"Name","value":"todoListTitle"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"title"}},{"kind":"Field","name":{"kind":"Name","value":"isLocked"}}]}}]}}]} as unknown as DocumentNode;
 export type CreateTodoListMutationFn = Apollo.MutationFunction<CreateTodoListMutation, CreateTodoListMutationVariables>;
 

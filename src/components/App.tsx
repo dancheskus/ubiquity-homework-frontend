@@ -4,14 +4,14 @@ import styled, { css } from 'styled-components'
 import GlobalStyle from 'style/GlobalStyle'
 import { getApolloClient, getUserId } from 'utils/apolloClient'
 import useCreateUserIfNeeded from 'customHooks/useCreateUserIfNeeded'
-import { useGetUserQuery } from 'generated/graphql'
+import { useGetTodoListsByWorkspaceQuery, useGetUserQuery } from 'generated/graphql'
 
 export default function App() {
   return (
     <ApolloProvider client={getApolloClient({ userId: getUserId() })}>
       <GlobalStyle />
 
-      <Main />
+      <WorkspaceSelector />
     </ApolloProvider>
   )
 }
@@ -22,7 +22,7 @@ const Box = styled.div`
   `}
 `
 
-const Main = () => {
+const WorkspaceSelector = () => {
   useCreateUserIfNeeded()
   const currentUserId = getUserId()
   const { data } = useGetUserQuery({ variables: { userId: currentUserId } })
@@ -31,15 +31,29 @@ const Main = () => {
     <div>
       <Box>Current user: {currentUserId}</Box>
       <Box color='red'>
-        <h2>workspaces</h2>
-        {data?.user?.workspaces.map(workspace => {
-          const { id, title } = workspace || {}
-
-          return <div key={id}>{title}</div>
-        })}
+        <h1>workspaces</h1>
+        {data?.user?.workspaces?.map(({ id: workspaceId, title: workspaceTitle }) => (
+          <div key={workspaceId}>
+            <div>Workspace name: {workspaceTitle}</div>
+            <Workspace workspaceId={workspaceId} />
+          </div>
+        ))}
 
         <div />
       </Box>
     </div>
+  )
+}
+
+const Workspace = ({ workspaceId }: { workspaceId: string }) => {
+  const { data } = useGetTodoListsByWorkspaceQuery({ variables: { workspaceId } })
+
+  return (
+    <Box color='blue'>
+      <h2>todoLists</h2>
+      {data?.todoLists.map(({ id, title }) => (
+        <div key={id}>TodoList name: {title}</div>
+      ))}
+    </Box>
   )
 }
