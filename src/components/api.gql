@@ -1,9 +1,13 @@
 query GetUser($userId: String!) {
   user(id: $userId) {
     id
+    workspaces {
+      id
+      title
+      isShared
+    }
   }
 }
-
 query GetUsers {
   users {
     id
