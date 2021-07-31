@@ -5,7 +5,7 @@ import GlobalStyle from 'style/GlobalStyle'
 import { getApolloClient, getUserId } from 'utils/apolloClient'
 
 const GET_USERS_QUERY = gql`
-  {
+  query GetUsers {
     users {
       id
     }
