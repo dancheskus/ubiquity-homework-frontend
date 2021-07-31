@@ -1,13 +1,16 @@
-import React from 'react'
+import { ApolloClient, ApolloProvider, createHttpLink, InMemoryCache, concat, gql } from '@apollo/client'
+import { setContext } from '@apollo/client/link/context'
+import { StrictMode } from 'react'
 import ReactDOM from 'react-dom'
+import { v4 as uuidv4 } from 'uuid'
 
 import App from './components/App'
 import reportWebVitals from './reportWebVitals'
 
 ReactDOM.render(
-  <React.StrictMode>
+  <StrictMode>
     <App />
-  </React.StrictMode>,
+  </StrictMode>,
   document.getElementById('root'),
 )
 
