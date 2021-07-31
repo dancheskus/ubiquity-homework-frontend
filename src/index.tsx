@@ -1,8 +1,5 @@
-import { ApolloClient, ApolloProvider, createHttpLink, InMemoryCache, concat, gql } from '@apollo/client'
-import { setContext } from '@apollo/client/link/context'
 import { StrictMode } from 'react'
 import ReactDOM from 'react-dom'
-import { v4 as uuidv4 } from 'uuid'
 
 import App from './components/App'
 import reportWebVitals from './reportWebVitals'

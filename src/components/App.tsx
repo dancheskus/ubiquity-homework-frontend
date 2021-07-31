@@ -1,5 +1,4 @@
-import { ApolloProvider, gql, useQuery } from '@apollo/client'
-import { useEffect } from 'react'
+import { ApolloProvider } from '@apollo/client'
 
 import { useGetUsersQuery } from 'generated/graphql'
 import GlobalStyle from 'style/GlobalStyle'
@@ -17,8 +16,7 @@ export default function App() {
 
 const Test = () => {
   const { loading, error, data, refetch, client } = useGetUsersQuery()
-  console.log(data?.users[0].id)
-  console.log(error)
+
   return (
     <div>
       test

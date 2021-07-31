@@ -1,0 +1,140 @@
+query GetUser($userId: String!) {
+  user(id: $userId) {
+    id
+  }
+}
+
+query GetUsers {
+  users {
+    id
+  }
+}
+
+mutation CreateUser {
+  createUser {
+    id
+  }
+}
+
+mutation CreateWorkspace($workspaceTitle: String!) {
+  createWorkspace(title: $workspaceTitle) {
+    id
+    title
+    isShared
+    ownerId
+    todoLists {
+      id
+      title
+      isLocked
+      workspaceId
+      todoItems {
+        id
+        title
+        description
+        cost
+        isCompleted
+        todoListId
+      }
+    }
+  }
+}
+
+mutation DeleteWorkspace($workspaceId: String!) {
+  deleteWorkspace(id: $workspaceId) {
+    id
+  }
+}
+
+mutation UpdateWorkspace(
+  $workspaceId: String!
+  $workspaceIsShared: Boolean
+  $workspaceTitle: String
+) {
+  updateWorkspace(
+    id: $workspaceId
+    isShared: $workspaceIsShared
+    title: $workspaceTitle
+  ) {
+    id
+    title
+    isShared
+  }
+}
+
+mutation CreateTodoList($todoListWorkspaceId: String!, $todoListTitle: String) {
+  createTodoList(workspaceId: $todoListWorkspaceId, title: $todoListTitle) {
+    id
+    title
+    isLocked
+  }
+}
+
+mutation DeleteTodoList($todoListId: String!) {
+  deleteTodoList(id: $todoListId) {
+    id
+  }
+}
+
+mutation UpdateTodoList(
+  $todoListId: String!
+  $todoListIsLocked: Boolean
+  $todoListTitle: String
+) {
+  updateTodoList(
+    id: $todoListId
+    isLocked: $todoListIsLocked
+    title: $todoListTitle
+  ) {
+    id
+    title
+    isLocked
+  }
+}
+
+mutation CreateTodoItem(
+  $todoItemTitle: String!
+  $todoItemTodoListId: String!
+  $todoItemDescription: String
+  $todoItemCost: Int
+) {
+  createTodoItem(
+    title: $todoItemTitle
+    todoListId: $todoItemTodoListId
+    description: $todoItemDescription
+    cost: $todoItemCost
+  ) {
+    id
+    title
+    description
+    cost
+    isCompleted
+  }
+}
+
+mutation DeleteTodoItem($todoItemId: String!) {
+  deleteTodoItem(id: $todoItemId) {
+    id
+  }
+}
+
+mutation UpdateTodoItem(
+  $todoItemId: String!
+  $todoItemIsCompleted: Boolean
+  $todoItemTitle: String
+  $todoItemDescription: String
+  $todoItemCost: Int
+) {
+  updateTodoItem(
+    id: $todoItemId
+    isCompleted: $todoItemIsCompleted
+    title: $todoItemTitle
+    description: $todoItemDescription
+    cost: $todoItemCost
+  ) {
+    id
+    title
+    description
+    cost
+    isCompleted
+  }
+}
