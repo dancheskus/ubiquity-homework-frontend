@@ -4,7 +4,7 @@ import styled, { css } from 'styled-components'
 import GlobalStyle from 'style/GlobalStyle'
 import { getApolloClient, getUserId } from 'utils/apolloClient'
 import useCreateUserIfNeeded from 'customHooks/useCreateUserIfNeeded'
-import { GetUserQuery, useGetUserQuery } from 'generated/graphql'
+import { GetUserQuery, useGetUserQuery, useUpdateTodoItemMutation } from 'generated/graphql'
 
 export default function App() {
   return (
@@ -60,15 +60,29 @@ const Workspace = ({ todoLists }: { todoLists: PartialTodoList[] }) => (
   </Box>
 )
 
-const TodoList = ({ todoItems }: { todoItems: PartialTodoItem[] }) => (
-  <Box color='purple'>
-    <h3>todoItems</h3>
-    {todoItems.map(({ id, title, cost, description, isCompleted }) => (
-      <Box color='orangered' key={id}>
-        <div>TodoItem title: {title}</div>
-        <div>TodoItem description: {description}</div>
-        <div>TodoItem cost: {cost}</div>
-      </Box>
-    ))}
-  </Box>
-)
+const TodoList = ({ todoItems }: { todoItems: PartialTodoItem[] }) => {
+  const [updateTodo, { data }] = useUpdateTodoItemMutation()
+
+  return (
+    <Box color='purple'>
+      <h3>todoItems</h3>
+      {todoItems.map(({ id, title, cost, description, isCompleted }) => (
+        <Box color='orangered' key={id}>
+          <div>TodoItem title: {title}</div>
+          <div>TodoItem description: {description}</div>
+          <div>TodoItem cost: {cost}</div>
+          <label htmlFor={id}>
+            isCompleted
+            <input
+              checked={isCompleted}
+              onChange={() => updateTodo({ variables: { todoItemId: id, todoItemIsCompleted: !isCompleted } })}
+              type='checkbox'
+              name='isCompleted'
+              id={id}
+            />
+          </label>
+        </Box>
+      ))}
+    </Box>
+  )
+}
