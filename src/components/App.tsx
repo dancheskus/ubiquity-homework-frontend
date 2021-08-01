@@ -61,28 +61,80 @@ const Workspace = ({ todoLists }: { todoLists: PartialTodoList[] }) => (
 )
 
 const TodoList = ({ todoItems }: { todoItems: PartialTodoItem[] }) => {
-  const [updateTodo, { data }] = useUpdateTodoItemMutation()
+  const [updateTodoMutation] = useUpdateTodoItemMutation()
 
   return (
     <Box color='purple'>
       <h3>todoItems</h3>
-      {todoItems.map(({ id, title, cost, description, isCompleted }) => (
-        <Box color='orangered' key={id}>
-          <div>TodoItem title: {title}</div>
-          <div>TodoItem description: {description}</div>
-          <div>TodoItem cost: {cost}</div>
-          <label htmlFor={id}>
-            isCompleted
-            <input
-              checked={isCompleted}
-              onChange={() => updateTodo({ variables: { todoItemId: id, todoItemIsCompleted: !isCompleted } })}
-              type='checkbox'
-              name='isCompleted'
-              id={id}
-            />
-          </label>
-        </Box>
-      ))}
+      {todoItems.map(({ id, title, cost, description, isCompleted }) => {
+        const updateTodo = ({
+          todoItemTitle,
+          todoItemCost,
+          todoItemDescription,
+          todoItemIsCompleted,
+        }: {
+          todoItemTitle?: string
+          todoItemCost?: number
+          todoItemDescription?: string
+          todoItemIsCompleted?: boolean
+        }) => {
+          updateTodoMutation({
+            variables: { todoItemId: id, todoItemCost, todoItemDescription, todoItemIsCompleted, todoItemTitle },
+          })
+        }
+
+        return (
+          <Box color='orangered' key={id}>
+            <div>
+              <label htmlFor={`title-${id}`}>
+                <input
+                  onChange={({ target: { value } }) => updateTodo({ todoItemTitle: value })}
+                  value={title}
+                  id={`title-${id}`}
+                />
+              </label>
+            </div>
+
+            <div>
+              {description && (
+                <label htmlFor={`description-${id}`}>
+                  <input
+                    onChange={({ target: { value } }) => updateTodo({ todoItemDescription: value })}
+                    value={description}
+                    id={`description-${id}`}
+                  />
+                </label>
+              )}
+            </div>
+
+            <div>
+              {cost && (
+                <label htmlFor={`cost-${id}`}>
+                  <input
+                    onChange={({ target: { value } }) => updateTodo({ todoItemCost: Number(value) })}
+                    type='number'
+                    value={cost}
+                    id={`cost-${id}`}
+                  />
+                </label>
+              )}
+            </div>
+
+            <div>
+              <label htmlFor={`isCompleted-${id}`}>
+                isCompleted
+                <input
+                  checked={isCompleted}
+                  onChange={() => updateTodo({ todoItemIsCompleted: !isCompleted })}
+                  type='checkbox'
+                  name='isCompleted'
+                  id={`isCompleted-${id}`}
+                />
+              </label>
+            </div>
+          </Box>
+        )
+      })}
     </Box>
   )
 }
