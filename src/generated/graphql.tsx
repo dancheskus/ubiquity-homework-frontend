@@ -87,9 +87,15 @@ export type MutationUpdateWorkspaceArgs = {
 
 export type Query = {
   __typename?: 'Query';
+  todoList: TodoList;
   todoLists: Array<TodoList>;
   user?: Maybe<User>;
   users: Array<User>;
+};
+
+
+export type QueryTodoListArgs = {
+  id: Scalars['String'];
 };
 
 
@@ -230,6 +236,23 @@ export type UpdateWorkspaceMutation = (
     { __typename?: 'Workspace' }
     & Pick<Workspace, 'id' | 'title' | 'isShared'>
   )> }
+);
+
+export type GetTodoListByIdQueryVariables = Exact<{
+  todoListId: Scalars['String'];
+}>;
+
+
+export type GetTodoListByIdQuery = (
+  { __typename?: 'Query' }
+  & { todoList: (
+    { __typename?: 'TodoList' }
+    & Pick<TodoList, 'id' | 'title' | 'isLocked' | 'workspaceId'>
+    & { todoItems: Array<(
+      { __typename?: 'TodoItem' }
+      & Pick<TodoItem, 'id' | 'title' | 'description' | 'cost' | 'isCompleted'>
+    )> }
+  ) }
 );
 
 export type GetTodoListsByWorkspaceQueryVariables = Exact<{
@@ -500,6 +523,35 @@ export function useUpdateWorkspaceMutation(baseOptions?: Apollo.MutationHookOpti
 export type UpdateWorkspaceMutationHookResult = ReturnType<typeof useUpdateWorkspaceMutation>;
 export type UpdateWorkspaceMutationResult = Apollo.MutationResult<UpdateWorkspaceMutation>;
 export type UpdateWorkspaceMutationOptions = Apollo.BaseMutationOptions<UpdateWorkspaceMutation, UpdateWorkspaceMutationVariables>;
+export const GetTodoListByIdDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"GetTodoListById"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"todoListId"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"todoList"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"id"},"value":{"kind":"Variable","name":{"kind":"Name","value":"todoListId"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"title"}},{"kind":"Field","name":{"kind":"Name","value":"isLocked"}},{"kind":"Field","name":{"kind":"Name","value":"workspaceId"}},{"kind":"Field","name":{"kind":"Name","value":"todoItems"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"title"}},{"kind":"Field","name":{"kind":"Name","value":"description"}},{"kind":"Field","name":{"kind":"Name","value":"cost"}},{"kind":"Field","name":{"kind":"Name","value":"isCompleted"}}]}}]}}]}}]} as unknown as DocumentNode;
+
+/**
+ * __useGetTodoListByIdQuery__
+ *
+ * To run a query within a React component, call `useGetTodoListByIdQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetTodoListByIdQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetTodoListByIdQuery({
+ *   variables: {
+ *      todoListId: // value for 'todoListId'
+ *   },
+ * });
+ */
+export function useGetTodoListByIdQuery(baseOptions: Apollo.QueryHookOptions<GetTodoListByIdQuery, GetTodoListByIdQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetTodoListByIdQuery, GetTodoListByIdQueryVariables>(GetTodoListByIdDocument, options);
+      }
+export function useGetTodoListByIdLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetTodoListByIdQuery, GetTodoListByIdQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetTodoListByIdQuery, GetTodoListByIdQueryVariables>(GetTodoListByIdDocument, options);
+        }
+export type GetTodoListByIdQueryHookResult = ReturnType<typeof useGetTodoListByIdQuery>;
+export type GetTodoListByIdLazyQueryHookResult = ReturnType<typeof useGetTodoListByIdLazyQuery>;
+export type GetTodoListByIdQueryResult = Apollo.QueryResult<GetTodoListByIdQuery, GetTodoListByIdQueryVariables>;
 export const GetTodoListsByWorkspaceDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"GetTodoListsByWorkspace"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"workspaceId"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"todoLists"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"workspaceId"},"value":{"kind":"Variable","name":{"kind":"Name","value":"workspaceId"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"title"}},{"kind":"Field","name":{"kind":"Name","value":"isLocked"}}]}}]}}]} as unknown as DocumentNode;
 
 /**
@@ -701,3 +753,23 @@ export function useUpdateTodoItemMutation(baseOptions?: Apollo.MutationHookOptio
 export type UpdateTodoItemMutationHookResult = ReturnType<typeof useUpdateTodoItemMutation>;
 export type UpdateTodoItemMutationResult = Apollo.MutationResult<UpdateTodoItemMutation>;
 export type UpdateTodoItemMutationOptions = Apollo.BaseMutationOptions<UpdateTodoItemMutation, UpdateTodoItemMutationVariables>;
+export const namedOperations = {
+  Query: {
+    GetUser: 'GetUser',
+    GetUsers: 'GetUsers',
+    GetTodoListById: 'GetTodoListById',
+    GetTodoListsByWorkspace: 'GetTodoListsByWorkspace'
+  },
+  Mutation: {
+    CreateUser: 'CreateUser',
+    CreateWorkspace: 'CreateWorkspace',
+    DeleteWorkspace: 'DeleteWorkspace',
+    UpdateWorkspace: 'UpdateWorkspace',
+    CreateTodoList: 'CreateTodoList',
+    DeleteTodoList: 'DeleteTodoList',
+    UpdateTodoList: 'UpdateTodoList',
+    CreateTodoItem: 'CreateTodoItem',
+    DeleteTodoItem: 'DeleteTodoItem',
+    UpdateTodoItem: 'UpdateTodoItem'
+  }
+}

@@ -79,6 +79,22 @@ mutation UpdateWorkspace(
   }
 }
 
+query GetTodoListById($todoListId: String!) {
+  todoList(id: $todoListId) {
+    id
+    title
+    isLocked
+    workspaceId
+    todoItems {
+      id
+      title
+      description
+      cost
+      isCompleted
+    }
+  }
+}
+
 query GetTodoListsByWorkspace($workspaceId: String!) {
   todoLists(workspaceId: $workspaceId) {
     id

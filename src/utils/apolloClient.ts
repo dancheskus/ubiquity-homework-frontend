@@ -17,6 +17,7 @@ export const getApolloClient = ({ userId }: { userId?: string } = {}) => {
   return new ApolloClient({
     cache: new InMemoryCache(),
     link: authLink.concat(httpLink),
+    connectToDevTools: process.env.NODE_ENV !== 'production',
   })
 }
 

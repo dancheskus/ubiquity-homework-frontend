@@ -19,4 +19,21 @@ export default createGlobalStyle`
     line-height: 1;
     box-sizing: border-box;
   }
+
+  button {
+    border: none;
+    outline: none;
+  }
+
+  textarea, input {
+    border: none;
+    outline: none;
+    background: none;
+    font-family: inherit;
+  }
+
+  textarea {
+    resize: none;
+    overflow: hidden;
+  }
 `
