@@ -1,5 +1,6 @@
 import { ApolloProvider } from '@apollo/client'
 import styled, { css } from 'styled-components'
+import { useState } from 'react'
 
 import GlobalStyle from 'style/GlobalStyle'
 import { getApolloClient, getUserId } from 'utils/apolloClient'
@@ -11,7 +12,7 @@ export default function App() {
     <ApolloProvider client={getApolloClient({ userId: getUserId() })}>
       <GlobalStyle />
 
-      <WorkspaceSelector />
+      <AppContent />
     </ApolloProvider>
   )
 }
@@ -22,18 +23,82 @@ const Box = styled.div`
   `}
 `
 
+const AppContentStyle = styled.div`
+  height: 100vh;
+  display: grid;
+  grid-template-columns: 25rem 1fr;
+  grid-template-rows: 8rem 1fr;
+  grid-template-areas:
+    'header header'
+    'sidebar main';
+`
+
+const Header = styled.header`
+  grid-area: header;
+  background: #eee;
+  display: flex;
+  align-items: center;
+  padding: 0 4rem;
+`
+
+const Sidebar = styled.section`
+  grid-area: sidebar;
+  background: #7373c5;
+`
+const SidebarWorkspaceButton = styled.div<{ active?: boolean }>`
+  ${({ active }) => css`
+    background: ${active ? '#a4a4c7' : '#8282be'};
+    padding: 3rem;
+    color: white;
+    transition: 0.2s;
+
+    ${!active &&
+    css`
+      cursor: pointer;
+
+      :hover {
+        background: #9494c2;
+      }
+    `}
+
+    :not(:last-child) {
+      border-bottom: 1px solid #727272;
+    }
+  `}
+`
+
+const MainContent = styled.section`
+  grid-area: main;
+  background: #fcfcfc;
+`
+
 type PartialWorkspace = NonNullable<GetUserQuery['user']>['workspaces'][0]
 type PartialTodoList = PartialWorkspace['todoLists'][0]
 type PartialTodoItem = PartialTodoList['todoItems'][0]
 
-const WorkspaceSelector = () => {
+const AppContent = () => {
   useCreateUserIfNeeded()
+  const [activeWorkspace, setActiveWorkspace] = useState<null | string>()
+
   const currentUserId = getUserId()
   const { data } = useGetUserQuery({ variables: { userId: currentUserId } })
+  const currentWorkspaceTodoLists = data?.user?.workspaces.find(({ id }) => id === activeWorkspace)?.todoLists
 
   return (
-    <div>
-      <Box>Current user: {currentUserId}</Box>
+    <AppContentStyle>
+      <Header>
+        <h3>User ID: {currentUserId}</h3>
+      </Header>
+      <Sidebar>
+        {data?.user?.workspaces?.map(({ id, title }) => (
+          <SidebarWorkspaceButton onClick={() => setActiveWorkspace(id)} active={activeWorkspace === id} key={id}>
+            {title}
+          </SidebarWorkspaceButton>
+        ))}
+      </Sidebar>
+
+      <MainContent>{currentWorkspaceTodoLists && <Workspace todoLists={currentWorkspaceTodoLists} />}</MainContent>
+      {/* <Box>Current user: {currentUserId}</Box>
 
       <Box color='red'>
         <h1>workspaces</h1>
@@ -43,8 +108,8 @@ const WorkspaceSelector = () => {
             <Workspace todoLists={todoLists} />
           </div>
         ))}
-      </Box>
-    </div>
+      </Box> */}
+    </AppContentStyle>
   )
 }
 
