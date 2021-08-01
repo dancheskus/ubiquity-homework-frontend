@@ -5,6 +5,20 @@ query GetUser($userId: String!) {
       id
       title
       isShared
+      ownerId
+      todoLists {
+        id
+        isLocked
+        title
+        workspaceId
+        todoItems {
+          id
+          title
+          description
+          cost
+          isCompleted
+        }
+      }
     }
   }
 }
