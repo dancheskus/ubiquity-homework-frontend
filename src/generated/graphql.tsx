@@ -87,10 +87,16 @@ export type MutationUpdateWorkspaceArgs = {
 
 export type Query = {
   __typename?: 'Query';
+  getWorkspace: Workspace;
   todoList: TodoList;
   todoLists: Array<TodoList>;
   user?: Maybe<User>;
   users: Array<User>;
+};
+
+
+export type QueryGetWorkspaceArgs = {
+  id: Scalars['String'];
 };
 
 
@@ -251,6 +257,23 @@ export type GetTodoListByIdQuery = (
     & { todoItems: Array<(
       { __typename?: 'TodoItem' }
       & Pick<TodoItem, 'id' | 'title' | 'description' | 'cost' | 'isCompleted'>
+    )> }
+  ) }
+);
+
+export type GetWorkspaceByIdQueryVariables = Exact<{
+  id: Scalars['String'];
+}>;
+
+
+export type GetWorkspaceByIdQuery = (
+  { __typename?: 'Query' }
+  & { getWorkspace: (
+    { __typename?: 'Workspace' }
+    & Pick<Workspace, 'id' | 'title' | 'isShared' | 'ownerId'>
+    & { todoLists: Array<(
+      { __typename?: 'TodoList' }
+      & Pick<TodoList, 'id' | 'title' | 'isLocked' | 'workspaceId'>
     )> }
   ) }
 );
@@ -552,6 +575,35 @@ export function useGetTodoListByIdLazyQuery(baseOptions?: Apollo.LazyQueryHookOp
 export type GetTodoListByIdQueryHookResult = ReturnType<typeof useGetTodoListByIdQuery>;
 export type GetTodoListByIdLazyQueryHookResult = ReturnType<typeof useGetTodoListByIdLazyQuery>;
 export type GetTodoListByIdQueryResult = Apollo.QueryResult<GetTodoListByIdQuery, GetTodoListByIdQueryVariables>;
+export const GetWorkspaceByIdDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"GetWorkspaceById"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"id"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"getWorkspace"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"id"},"value":{"kind":"Variable","name":{"kind":"Name","value":"id"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"title"}},{"kind":"Field","name":{"kind":"Name","value":"isShared"}},{"kind":"Field","name":{"kind":"Name","value":"ownerId"}},{"kind":"Field","name":{"kind":"Name","value":"todoLists"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"title"}},{"kind":"Field","name":{"kind":"Name","value":"isLocked"}},{"kind":"Field","name":{"kind":"Name","value":"workspaceId"}}]}}]}}]}}]} as unknown as DocumentNode;
+
+/**
+ * __useGetWorkspaceByIdQuery__
+ *
+ * To run a query within a React component, call `useGetWorkspaceByIdQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetWorkspaceByIdQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetWorkspaceByIdQuery({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useGetWorkspaceByIdQuery(baseOptions: Apollo.QueryHookOptions<GetWorkspaceByIdQuery, GetWorkspaceByIdQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetWorkspaceByIdQuery, GetWorkspaceByIdQueryVariables>(GetWorkspaceByIdDocument, options);
+      }
+export function useGetWorkspaceByIdLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetWorkspaceByIdQuery, GetWorkspaceByIdQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetWorkspaceByIdQuery, GetWorkspaceByIdQueryVariables>(GetWorkspaceByIdDocument, options);
+        }
+export type GetWorkspaceByIdQueryHookResult = ReturnType<typeof useGetWorkspaceByIdQuery>;
+export type GetWorkspaceByIdLazyQueryHookResult = ReturnType<typeof useGetWorkspaceByIdLazyQuery>;
+export type GetWorkspaceByIdQueryResult = Apollo.QueryResult<GetWorkspaceByIdQuery, GetWorkspaceByIdQueryVariables>;
 export const GetTodoListsByWorkspaceDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"GetTodoListsByWorkspace"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"workspaceId"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"todoLists"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"workspaceId"},"value":{"kind":"Variable","name":{"kind":"Name","value":"workspaceId"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"title"}},{"kind":"Field","name":{"kind":"Name","value":"isLocked"}}]}}]}}]} as unknown as DocumentNode;
 
 /**
@@ -758,6 +810,7 @@ export const namedOperations = {
     GetUser: 'GetUser',
     GetUsers: 'GetUsers',
     GetTodoListById: 'GetTodoListById',
+    GetWorkspaceById: 'GetWorkspaceById',
     GetTodoListsByWorkspace: 'GetTodoListsByWorkspace'
   },
   Mutation: {

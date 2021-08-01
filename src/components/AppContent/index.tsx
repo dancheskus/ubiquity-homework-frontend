@@ -31,7 +31,11 @@ export default function AppContent() {
         ))}
       </Sidebar>
 
-      <MainContent>{currentWorkspaceTodoLists && <Workspace todoLists={currentWorkspaceTodoLists} />}</MainContent>
+      <MainContent>
+        {currentWorkspaceTodoLists && (
+          <Workspace workspaceId={activeWorkspace!} todoLists={currentWorkspaceTodoLists} />
+        )}
+      </MainContent>
     </AppContentStyle>
   )
 }

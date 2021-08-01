@@ -95,6 +95,21 @@ query GetTodoListById($todoListId: String!) {
   }
 }
 
+query GetWorkspaceById($id: String!) {
+  getWorkspace(id: $id) {
+    id
+    title
+    isShared
+    ownerId
+    todoLists {
+      id
+      title
+      isLocked
+      workspaceId
+    }
+  }
+}
+
 query GetTodoListsByWorkspace($workspaceId: String!) {
   todoLists(workspaceId: $workspaceId) {
     id

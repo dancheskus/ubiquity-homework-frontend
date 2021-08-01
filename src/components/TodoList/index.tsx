@@ -19,17 +19,15 @@ import {
 } from './style'
 
 export default function TodoList({ todoItems, todoListId }: { todoItems: PartialTodoItem[]; todoListId: string }) {
-  const [refetchWorkspace] = useGetTodoListByIdLazyQuery({ variables: { todoListId } })
+  const [refetchTodoList] = useGetTodoListByIdLazyQuery({ variables: { todoListId } })
   const [updateTodoMutation] = useUpdateTodoItemMutation()
-  const [deleteTodoMutation] = useDeleteTodoItemMutation({ onCompleted: () => refetchWorkspace() })
+  const [deleteTodoMutation] = useDeleteTodoItemMutation({ onCompleted: () => refetchTodoList() })
 
   return (
     <TodoItemWrapper>
       {todoItems.map(({ id, title, description, isCompleted }) => {
         const updateTodo = (variables: Omit<UpdateTodoItemMutationVariables, 'todoItemId'>) => {
-          updateTodoMutation({
-            variables: { todoItemId: id, ...variables },
-          })
+          updateTodoMutation({ variables: { todoItemId: id, ...variables } })
         }
 
         return (
