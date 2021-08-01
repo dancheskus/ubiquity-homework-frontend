@@ -31,17 +31,15 @@ const WorkspaceSelector = () => {
   const currentUserId = getUserId()
   const { data } = useGetUserQuery({ variables: { userId: currentUserId } })
 
-  console.log(data)
-
   return (
     <div>
       <Box>Current user: {currentUserId}</Box>
 
       <Box color='red'>
         <h1>workspaces</h1>
-        {data?.user?.workspaces?.map(({ id: workspaceId, title: workspaceTitle, todoLists }) => (
-          <div key={workspaceId}>
-            <div>Workspace title: {workspaceTitle}</div>
+        {data?.user?.workspaces?.map(({ id, title, todoLists }) => (
+          <div key={id}>
+            <div>Workspace title: {title}</div>
             <Workspace todoLists={todoLists} />
           </div>
         ))}
@@ -66,7 +64,7 @@ const TodoList = ({ todoItems }: { todoItems: PartialTodoItem[] }) => (
   <Box color='purple'>
     <h3>todoItems</h3>
     {todoItems.map(({ id, title, cost, description, isCompleted }) => (
-      <Box color='orangered'>
+      <Box color='orangered' key={id}>
         <div>TodoItem title: {title}</div>
         <div>TodoItem description: {description}</div>
         <div>TodoItem cost: {cost}</div>
