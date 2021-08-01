@@ -39,6 +39,10 @@ const Header = styled.header`
   display: flex;
   align-items: center;
   padding: 0 4rem;
+
+  span {
+    font-weight: 200;
+  }
 `
 
 const Sidebar = styled.section`
@@ -87,7 +91,9 @@ const AppContent = () => {
   return (
     <AppContentStyle>
       <Header>
-        <h3>User ID: {currentUserId}</h3>
+        <h3>
+          User ID: <span>{currentUserId}</span>
+        </h3>
       </Header>
       <Sidebar>
         {data?.user?.workspaces?.map(({ id, title }) => (
@@ -98,40 +104,116 @@ const AppContent = () => {
       </Sidebar>
 
       <MainContent>{currentWorkspaceTodoLists && <Workspace todoLists={currentWorkspaceTodoLists} />}</MainContent>
-      {/* <Box>Current user: {currentUserId}</Box>
-
-      <Box color='red'>
-        <h1>workspaces</h1>
-        {data?.user?.workspaces?.map(({ id, title, todoLists }) => (
-          <div key={id}>
-            <div>Workspace title: {title}</div>
-            <Workspace todoLists={todoLists} />
-          </div>
-        ))}
-      </Box> */}
     </AppContentStyle>
   )
 }
 
+const TodoListsContainer = styled.div`
+  padding: 2rem;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, 30rem);
+  column-gap: 2rem;
+  align-items: start;
+`
+const TodoListWrapper = styled.div`
+  background: #a4a4c7;
+  border-radius: 5px;
+  overflow: hidden;
+`
+
+const TodoListTitle = styled.h3`
+  background: #ffffff29;
+  padding: 1rem;
+`
+
+const TodoItemWrapper = styled.div`
+  display: grid;
+  gap: 1rem;
+  padding: 1rem;
+`
+
+const TodoItem = styled.div`
+  background: #eee;
+  padding: 1rem;
+  border-radius: 5px;
+`
+
 const Workspace = ({ todoLists }: { todoLists: PartialTodoList[] }) => (
-  <Box color='blue'>
-    <h2>todoLists</h2>
+  <TodoListsContainer>
     {todoLists.map(({ id, title, todoItems }) => (
-      <div key={id}>
-        <div>TodoList title: {title}</div>
+      <TodoListWrapper key={id}>
+        <TodoListTitle>{title}</TodoListTitle>
+
         <TodoList todoItems={todoItems} />
-      </div>
+      </TodoListWrapper>
     ))}
-  </Box>
+  </TodoListsContainer>
 )
+
+// return (
+// <Box color='blue'>
+//   <h2>todoLists</h2>
+//   {todoLists.map(({ id, title, todoItems }) => (
+//     <div key={id}>
+//       <div>TodoList title: {title}</div>
+//       <TodoList todoItems={todoItems} />
+//     </div>
+//   ))}
+// </Box>
+// )
+
+const TodoItemHeader = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+`
+
+const TodoItemTitle = styled.h4`
+  font-weight: 300;
+`
+
+const TodoItemDescription = styled.div`
+  font-size: 1.4rem;
+`
+
+const Divider = styled.div`
+  height: 1px;
+  background: #000;
+  margin: 1rem 0;
+`
+
+const TodoItemCompletedToggle = styled.div<{ isChecked?: boolean }>`
+  ${({ isChecked }) => css`
+    width: 2rem;
+    height: 2rem;
+    border: 2px solid #a4a4c7;
+    border-radius: 50%;
+    position: relative;
+    cursor: pointer;
+
+    ${isChecked &&
+    css`
+      :after {
+        content: '';
+        position: absolute;
+        left: 50%;
+        top: 50%;
+        transform: translate(-50%, -50%);
+        width: 1.3rem;
+        height: 1.3rem;
+        border-radius: 50%;
+        background: #a4a4c7;
+      }
+    `}
+  `}
+`
 
 const TodoList = ({ todoItems }: { todoItems: PartialTodoItem[] }) => {
   const [updateTodoMutation] = useUpdateTodoItemMutation()
 
   return (
-    <Box color='purple'>
-      <h3>todoItems</h3>
-      {todoItems.map(({ id, title, cost, description, isCompleted }) => {
+    <TodoItemWrapper>
+      {todoItems.map(({ id, title, description, isCompleted }) => {
         const updateTodo = ({
           todoItemTitle,
           todoItemCost,
@@ -149,57 +231,98 @@ const TodoList = ({ todoItems }: { todoItems: PartialTodoItem[] }) => {
         }
 
         return (
-          <Box color='orangered' key={id}>
-            <div>
-              <label htmlFor={`title-${id}`}>
-                <input
-                  onChange={({ target: { value } }) => updateTodo({ todoItemTitle: value })}
-                  value={title}
-                  id={`title-${id}`}
-                />
-              </label>
-            </div>
-
-            <div>
-              {description && (
-                <label htmlFor={`description-${id}`}>
-                  <input
-                    onChange={({ target: { value } }) => updateTodo({ todoItemDescription: value })}
-                    value={description}
-                    id={`description-${id}`}
-                  />
-                </label>
-              )}
-            </div>
-
-            <div>
-              {cost && (
-                <label htmlFor={`cost-${id}`}>
-                  <input
-                    onChange={({ target: { value } }) => updateTodo({ todoItemCost: Number(value) })}
-                    type='number'
-                    value={cost}
-                    id={`cost-${id}`}
-                  />
-                </label>
-              )}
-            </div>
-
-            <div>
-              <label htmlFor={`isCompleted-${id}`}>
-                isCompleted
-                <input
-                  checked={isCompleted}
-                  onChange={() => updateTodo({ todoItemIsCompleted: !isCompleted })}
-                  type='checkbox'
-                  name='isCompleted'
-                  id={`isCompleted-${id}`}
-                />
-              </label>
-            </div>
-          </Box>
+          <TodoItem key={id}>
+            <TodoItemHeader>
+              <TodoItemTitle>{title}</TodoItemTitle>
+              <TodoItemCompletedToggle
+                onClick={() => updateTodo({ todoItemIsCompleted: !isCompleted })}
+                isChecked={isCompleted}
+              />
+            </TodoItemHeader>
+            {description && (
+              <>
+                <Divider />
+                <TodoItemDescription>{description}</TodoItemDescription>
+              </>
+            )}
+          </TodoItem>
         )
       })}
-    </Box>
+    </TodoItemWrapper>
   )
+
+  // return (
+  //   <Box color='purple'>
+  //     <h3>todoItems</h3>
+  //     {todoItems.map(({ id, title, cost, description, isCompleted }) => {
+  //       const updateTodo = ({
+  //         todoItemTitle,
+  //         todoItemCost,
+  //         todoItemDescription,
+  //         todoItemIsCompleted,
+  //       }: {
+  //         todoItemTitle?: string
+  //         todoItemCost?: number
+  //         todoItemDescription?: string
+  //         todoItemIsCompleted?: boolean
+  //       }) => {
+  //         updateTodoMutation({
+  //           variables: { todoItemId: id, todoItemCost, todoItemDescription, todoItemIsCompleted, todoItemTitle },
+  //         })
+  //       }
+
+  //       return (
+  //         <Box color='orangered' key={id}>
+  //           <div>
+  //             <label htmlFor={`title-${id}`}>
+  //               <input
+  //                 onChange={({ target: { value } }) => updateTodo({ todoItemTitle: value })}
+  //                 value={title}
+  //                 id={`title-${id}`}
+  //               />
+  //             </label>
+  //           </div>
+
+  //           <div>
+  //             {description && (
+  //               <label htmlFor={`description-${id}`}>
+  //                 <input
+  //                   onChange={({ target: { value } }) => updateTodo({ todoItemDescription: value })}
+  //                   value={description}
+  //                   id={`description-${id}`}
+  //                 />
+  //               </label>
+  //             )}
+  //           </div>
+
+  //           <div>
+  //             {cost && (
+  //               <label htmlFor={`cost-${id}`}>
+  //                 <input
+  //                   onChange={({ target: { value } }) => updateTodo({ todoItemCost: Number(value) })}
+  //                   type='number'
+  //                   value={cost}
+  //                   id={`cost-${id}`}
+  //                 />
+  //               </label>
+  //             )}
+  //           </div>
+
+  //           <div>
+  //             <label htmlFor={`isCompleted-${id}`}>
+  //               isCompleted
+  //               <input
+  //                 checked={isCompleted}
+  //                 onChange={() => updateTodo({ todoItemIsCompleted: !isCompleted })}
+  //                 type='checkbox'
+  //                 name='isCompleted'
+  //                 id={`isCompleted-${id}`}
+  //               />
+  //             </label>
+  //           </div>
+  //         </Box>
+  //       )
+  //     })}
+  //   </Box>
+  // )
 }

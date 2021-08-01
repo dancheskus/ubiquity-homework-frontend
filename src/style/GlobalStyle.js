@@ -16,6 +16,7 @@ export default createGlobalStyle`
   body {  
     font-family: 'Exo 2', sans-serif;
     font-size: 1.6rem;
+    line-height: 1;
     box-sizing: border-box;
   }
 `
