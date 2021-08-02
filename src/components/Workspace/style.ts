@@ -6,6 +6,7 @@ export const TodoListsContainer = styled.div`
   grid-template-columns: repeat(auto-fit, 30rem);
   column-gap: 2rem;
   align-items: start;
+  overflow: auto;
 `
 export const TodoListWrapper = styled.div`
   background: #a4a4c7;
@@ -33,4 +34,15 @@ export const RemoveTodoListButton = styled.button`
   :hover {
     filter: brightness(1.05);
   }
+`
+
+export const WorkspaceFooter = styled.div`
+  display: grid;
+  gap: 1rem;
+  grid-auto-flow: column;
+  justify-items: end;
+  align-items: center;
+  justify-content: end;
+  background: #b3b3d0;
+  padding: 1rem;
 `

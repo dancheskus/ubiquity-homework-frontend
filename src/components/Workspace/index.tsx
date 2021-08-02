@@ -5,13 +5,23 @@ import {
   useGetWorkspaceByIdLazyQuery,
   useUpdateTodoListMutation,
 } from 'generated/graphql'
-import TempButton from 'TempButton'
+import Button from 'style/Button'
 
 import { PartialTodoList } from '../types'
-import { TodoListsContainer, TodoListWrapper, TodoListHeader, TodoListTitle, RemoveTodoListButton } from './style'
+import {
+  TodoListsContainer,
+  TodoListWrapper,
+  TodoListHeader,
+  TodoListTitle,
+  RemoveTodoListButton,
+  WorkspaceFooter,
+} from './style'
 
 export default function Workspace({ workspaceId, todoLists }: { todoLists: PartialTodoList[]; workspaceId: string }) {
-  const [refetchWorkspace] = useGetWorkspaceByIdLazyQuery({ variables: { id: workspaceId } })
+  const [refetchWorkspace] = useGetWorkspaceByIdLazyQuery({
+    variables: { id: workspaceId },
+    fetchPolicy: 'network-only',
+  })
   const [updateListMutation] = useUpdateTodoListMutation()
   const [deleteTodoListMutation] = useDeleteTodoListMutation({ onCompleted: () => refetchWorkspace() })
   const [createTodoListMutation] = useCreateTodoListMutation({ onCompleted: () => refetchWorkspace() })
@@ -40,16 +50,35 @@ export default function Workspace({ workspaceId, todoLists }: { todoLists: Parti
         ))}
       </TodoListsContainer>
 
-      <TempButton
-        buttonName='Add Todo list'
-        onClick={() => {
-          const listName = prompt('Enter list name')
+      <WorkspaceFooter>
+        <Button
+          onClick={() => {
+            const listName = prompt('Enter list name')
 
-          createTodoListMutation({
-            variables: { todoListWorkspaceId: workspaceId, todoListTitle: listName },
-          })
-        }}
-      />
+            createTodoListMutation({
+              variables: { todoListWorkspaceId: workspaceId, todoListTitle: listName },
+            })
+          }}
+        >
+          Add Todo List
+        </Button>
+
+        <Button
+          onClick={() => {
+            console.log('lock')
+          }}
+        >
+          Lock Workspace
+        </Button>
+
+        <Button
+          onClick={() => {
+            console.log('copy')
+          }}
+        >
+          Copy Workspace Link
+        </Button>
+      </WorkspaceFooter>
     </>
   )
 }

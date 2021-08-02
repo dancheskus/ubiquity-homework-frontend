@@ -51,4 +51,7 @@ export const SidebarWorkspaceButton = styled.div<{ active?: boolean }>`
 export const MainContent = styled.section`
   grid-area: main;
   background: #fcfcfc;
+  display: grid;
+  grid-template-rows: 1fr 6rem;
+  overflow: auto;
 `

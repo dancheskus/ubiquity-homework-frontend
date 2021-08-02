@@ -6,7 +6,7 @@ import {
   useUpdateTodoItemMutation,
 } from 'generated/graphql'
 import { PartialTodoItem } from 'components/types'
-import TempButton from 'TempButton'
+import Button from 'style/Button'
 
 import {
   TodoItemWrapper,
@@ -71,21 +71,20 @@ export default function TodoList({ todoItems, todoListId }: { todoItems: Partial
         )
       })}
 
-      <TempButton
-        buttonName='Add todo item'
+      <Button
         onClick={() => {
           const itemName = prompt('Enter item name')
-          const itemDescription = prompt('Enter item description')
 
           createTodoItemMutation({
             variables: {
               todoItemTodoListId: todoListId,
               todoItemTitle: itemName || '',
-              todoItemDescription: itemDescription,
             },
           })
         }}
-      />
+      >
+        Add todo item
+      </Button>
     </TodoItemWrapper>
   )
 }
