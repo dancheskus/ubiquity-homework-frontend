@@ -25,6 +25,9 @@ export const Header = styled.header`
 export const Sidebar = styled.section`
   grid-area: sidebar;
   background: #7373c5;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
 `
 export const SidebarWorkspaceButton = styled.div<{ active?: boolean }>`
   ${({ active }) => css`
@@ -54,4 +57,17 @@ export const MainContent = styled.section`
   display: grid;
   grid-template-rows: 1fr 6rem;
   overflow: auto;
+`
+
+export const SidebarAddWorkspaceIconWrapper = styled.div`
+  height: 25rem;
+  background: #ffffff39;
+  display: grid;
+  place-items: center;
+  transition: 0.2s;
+  cursor: pointer;
+
+  :hover {
+    background: #ffffff50;
+  }
 `

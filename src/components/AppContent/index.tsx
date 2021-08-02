@@ -4,8 +4,16 @@ import useCreateUserIfNeeded from 'customHooks/useCreateUserIfNeeded'
 import { getUserId } from 'utils/apolloClient'
 import { useGetUserQuery } from 'generated/graphql'
 import Workspace from 'components/Workspace'
+import PlusIcon from 'icons'
 
-import { AppContentStyle, Header, Sidebar, SidebarWorkspaceButton, MainContent } from './style'
+import {
+  AppContentStyle,
+  Header,
+  Sidebar,
+  SidebarWorkspaceButton,
+  MainContent,
+  SidebarAddWorkspaceIconWrapper,
+} from './style'
 
 export default function AppContent() {
   useCreateUserIfNeeded()
@@ -24,11 +32,17 @@ export default function AppContent() {
       </Header>
 
       <Sidebar>
-        {data?.user?.workspaces?.map(({ id, title }) => (
-          <SidebarWorkspaceButton onClick={() => setActiveWorkspace(id)} active={activeWorkspace === id} key={id}>
-            {title}
-          </SidebarWorkspaceButton>
-        ))}
+        <div>
+          {data?.user?.workspaces?.map(({ id, title }) => (
+            <SidebarWorkspaceButton onClick={() => setActiveWorkspace(id)} active={activeWorkspace === id} key={id}>
+              {title}
+            </SidebarWorkspaceButton>
+          ))}
+        </div>
+
+        <SidebarAddWorkspaceIconWrapper>
+          <PlusIcon />
+        </SidebarAddWorkspaceIconWrapper>
       </Sidebar>
 
       <MainContent>
