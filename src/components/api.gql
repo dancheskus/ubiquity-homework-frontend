@@ -25,6 +25,9 @@ query GetUser($userId: String!) {
 query GetUsers {
   users {
     id
+    workspaces {
+      id
+    }
   }
 }
 

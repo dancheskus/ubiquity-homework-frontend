@@ -2,7 +2,7 @@ import { useState } from 'react'
 
 import useCreateUserIfNeeded from 'customHooks/useCreateUserIfNeeded'
 import { getUserId } from 'utils/apolloClient'
-import { useGetUserQuery } from 'generated/graphql'
+import { useCreateWorkspaceMutation, useGetUserQuery } from 'generated/graphql'
 import Workspace from 'components/Workspace'
 import PlusIcon from 'icons'
 
@@ -17,6 +17,7 @@ import {
 
 export default function AppContent() {
   useCreateUserIfNeeded()
+  const [createWorkspaceMutation] = useCreateWorkspaceMutation()
   const [activeWorkspace, setActiveWorkspace] = useState<null | string>()
 
   const currentUserId = getUserId()
@@ -40,7 +41,14 @@ export default function AppContent() {
           ))}
         </div>
 
-        <SidebarAddWorkspaceIconWrapper>
+        <SidebarAddWorkspaceIconWrapper
+          onClick={() => {
+            const workspaceTitle = prompt('Workspace title')
+            if (!workspaceTitle) return
+
+            createWorkspaceMutation({ variables: { workspaceTitle } })
+          }}
+        >
           <PlusIcon />
         </SidebarAddWorkspaceIconWrapper>
       </Sidebar>

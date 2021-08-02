@@ -2,6 +2,8 @@ import TodoList from 'components/TodoList'
 import {
   useCreateTodoListMutation,
   useDeleteTodoListMutation,
+  useDeleteWorkspaceMutation,
+  useGetUsersLazyQuery,
   useGetWorkspaceByIdLazyQuery,
   useUpdateTodoListMutation,
 } from 'generated/graphql'
@@ -22,9 +24,11 @@ export default function Workspace({ workspaceId, todoLists }: { todoLists: Parti
     variables: { id: workspaceId },
     fetchPolicy: 'network-only',
   })
+  const [refetchUser] = useGetUsersLazyQuery({ fetchPolicy: 'network-only' })
   const [updateListMutation] = useUpdateTodoListMutation()
   const [deleteTodoListMutation] = useDeleteTodoListMutation({ onCompleted: () => refetchWorkspace() })
   const [createTodoListMutation] = useCreateTodoListMutation({ onCompleted: () => refetchWorkspace() })
+  const [deleteWorkspaceMutation] = useDeleteWorkspaceMutation({ onCompleted: () => refetchUser() })
 
   return (
     <>
@@ -51,6 +55,8 @@ export default function Workspace({ workspaceId, todoLists }: { todoLists: Parti
       </TodoListsContainer>
 
       <WorkspaceFooter>
+        <Button onClick={() => deleteWorkspaceMutation({ variables: { workspaceId } })}>Remove Workspace</Button>
+
         <Button
           onClick={() => {
             const listName = prompt('Enter list name')
