@@ -36,4 +36,8 @@ export default createGlobalStyle`
     resize: none;
     overflow: hidden;
   }
+
+  a {
+    text-decoration: none;
+  }
 `

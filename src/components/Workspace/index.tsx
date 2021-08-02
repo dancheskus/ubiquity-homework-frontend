@@ -1,3 +1,5 @@
+import { CopyToClipboard } from 'react-copy-to-clipboard'
+
 import TodoList from 'components/TodoList'
 import {
   useCreateTodoListMutation,
@@ -77,13 +79,9 @@ export default function Workspace({ workspaceId, todoLists }: { todoLists: Parti
           Lock Workspace
         </Button>
 
-        <Button
-          onClick={() => {
-            console.log('copy')
-          }}
-        >
-          Copy Workspace Link
-        </Button>
+        <CopyToClipboard text={window.location.href}>
+          <Button>Copy Workspace Link</Button>
+        </CopyToClipboard>
       </WorkspaceFooter>
     </>
   )

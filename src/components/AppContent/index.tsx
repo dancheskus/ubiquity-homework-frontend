@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useHistory, useLocation } from 'react-router-dom'
 
 import useCreateUserIfNeeded from 'customHooks/useCreateUserIfNeeded'
 import { getUserId } from 'utils/apolloClient'
@@ -19,7 +19,10 @@ export default function AppContent() {
   useCreateUserIfNeeded()
   const [refetchUser] = useGetUsersLazyQuery({ fetchPolicy: 'network-only' })
   const [createWorkspaceMutation] = useCreateWorkspaceMutation({ onCompleted: () => refetchUser() })
-  const [activeWorkspace, setActiveWorkspace] = useState<null | string>()
+  const history = useHistory()
+  const location = useLocation()
+  const locationSplitted = location.pathname.split('/')
+  const activeWorkspace = locationSplitted[locationSplitted.length - 1]
 
   const currentUserId = getUserId()
   const { data } = useGetUserQuery({ variables: { userId: currentUserId } })
@@ -36,7 +39,11 @@ export default function AppContent() {
       <Sidebar>
         <div>
           {data?.user?.workspaces?.map(({ id, title }) => (
-            <SidebarWorkspaceButton onClick={() => setActiveWorkspace(id)} active={activeWorkspace === id} key={id}>
+            <SidebarWorkspaceButton
+              onClick={() => history.push(`/workspace/${id}`)}
+              active={activeWorkspace === id}
+              key={id}
+            >
               {title}
             </SidebarWorkspaceButton>
           ))}
@@ -56,7 +63,10 @@ export default function AppContent() {
 
       <MainContent>
         {currentWorkspaceTodoLists && (
-          <Workspace workspaceId={activeWorkspace!} todoLists={currentWorkspaceTodoLists} />
+          <Workspace
+            workspaceId={locationSplitted[locationSplitted.length - 1]}
+            todoLists={currentWorkspaceTodoLists}
+          />
         )}
       </MainContent>
     </AppContentStyle>
