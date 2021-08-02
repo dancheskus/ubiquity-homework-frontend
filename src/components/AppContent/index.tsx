@@ -21,12 +21,11 @@ export default function AppContent() {
   const [createWorkspaceMutation] = useCreateWorkspaceMutation({ onCompleted: () => refetchUser() })
   const history = useHistory()
   const location = useLocation()
-  const locationSplitted = location.pathname.split('/')
-  const activeWorkspace = locationSplitted[locationSplitted.length - 1]
+  const [, activeWorkspaceId] = location.pathname.match(/\/workspace\/(.+)/) ?? []
 
   const currentUserId = getUserId()
   const { data } = useGetUserQuery({ variables: { userId: currentUserId } })
-  const currentWorkspaceTodoLists = data?.user?.workspaces.find(({ id }) => id === activeWorkspace)?.todoLists
+  const currentWorkspaceTodoLists = data?.user?.workspaces.find(({ id }) => id === activeWorkspaceId)?.todoLists
 
   return (
     <AppContentStyle>
@@ -41,7 +40,7 @@ export default function AppContent() {
           {data?.user?.workspaces?.map(({ id, title }) => (
             <SidebarWorkspaceButton
               onClick={() => history.push(`/workspace/${id}`)}
-              active={activeWorkspace === id}
+              active={activeWorkspaceId === id}
               key={id}
             >
               {title}
@@ -63,10 +62,7 @@ export default function AppContent() {
 
       <MainContent>
         {currentWorkspaceTodoLists && (
-          <Workspace
-            workspaceId={locationSplitted[locationSplitted.length - 1]}
-            todoLists={currentWorkspaceTodoLists}
-          />
+          <Workspace workspaceId={activeWorkspaceId} todoLists={currentWorkspaceTodoLists} />
         )}
       </MainContent>
     </AppContentStyle>
