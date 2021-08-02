@@ -2,7 +2,7 @@ import { useState } from 'react'
 
 import useCreateUserIfNeeded from 'customHooks/useCreateUserIfNeeded'
 import { getUserId } from 'utils/apolloClient'
-import { useCreateWorkspaceMutation, useGetUserQuery } from 'generated/graphql'
+import { useCreateWorkspaceMutation, useGetUserQuery, useGetUsersLazyQuery } from 'generated/graphql'
 import Workspace from 'components/Workspace'
 import PlusIcon from 'icons'
 
@@ -17,7 +17,8 @@ import {
 
 export default function AppContent() {
   useCreateUserIfNeeded()
-  const [createWorkspaceMutation] = useCreateWorkspaceMutation()
+  const [refetchUser] = useGetUsersLazyQuery({ fetchPolicy: 'network-only' })
+  const [createWorkspaceMutation] = useCreateWorkspaceMutation({ onCompleted: () => refetchUser() })
   const [activeWorkspace, setActiveWorkspace] = useState<null | string>()
 
   const currentUserId = getUserId()
