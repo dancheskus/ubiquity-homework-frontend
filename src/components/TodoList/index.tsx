@@ -1,10 +1,12 @@
 import {
   UpdateTodoItemMutationVariables,
+  useCreateTodoItemMutation,
   useDeleteTodoItemMutation,
   useGetTodoListByIdLazyQuery,
   useUpdateTodoItemMutation,
 } from 'generated/graphql'
 import { PartialTodoItem } from 'components/types'
+import TempButton from 'TempButton'
 
 import {
   TodoItemWrapper,
@@ -19,9 +21,10 @@ import {
 } from './style'
 
 export default function TodoList({ todoItems, todoListId }: { todoItems: PartialTodoItem[]; todoListId: string }) {
-  const [refetchTodoList] = useGetTodoListByIdLazyQuery({ variables: { todoListId } })
+  const [refetchTodoList, {}] = useGetTodoListByIdLazyQuery({ variables: { todoListId }, fetchPolicy: 'network-only' })
   const [updateTodoMutation] = useUpdateTodoItemMutation()
   const [deleteTodoMutation] = useDeleteTodoItemMutation({ onCompleted: () => refetchTodoList() })
+  const [createTodoItemMutation] = useCreateTodoItemMutation({ onCompleted: () => refetchTodoList() })
 
   return (
     <TodoItemWrapper>
@@ -67,6 +70,22 @@ export default function TodoList({ todoItems, todoListId }: { todoItems: Partial
           </TodoItem>
         )
       })}
+
+      <TempButton
+        buttonName='Add todo item'
+        onClick={() => {
+          const itemName = prompt('Enter item name')
+          const itemDescription = prompt('Enter item description')
+
+          createTodoItemMutation({
+            variables: {
+              todoItemTodoListId: todoListId,
+              todoItemTitle: itemName || '',
+              todoItemDescription: itemDescription,
+            },
+          })
+        }}
+      />
     </TodoItemWrapper>
   )
 }
