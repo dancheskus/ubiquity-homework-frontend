@@ -94,6 +94,7 @@ query GetTodoListById($todoListId: String!) {
       description
       cost
       isCompleted
+      todoListId
     }
   }
 }
@@ -190,6 +191,16 @@ mutation CreateTodoItem(
   }
 }
 
+query GetTodoItemByIdQuery($id: String!) {
+  todoItem(id: $id) {
+    id
+    title
+    description
+    cost
+    isCompleted
+  }
+}
+
 mutation DeleteTodoItem($todoItemId: String!) {
   deleteTodoItem(id: $todoItemId) {
     id
@@ -215,5 +226,11 @@ mutation UpdateTodoItem(
     description
     cost
     isCompleted
+  }
+}
+
+subscription TodoItemUpdated($id: String!) {
+  updateTodoItem(id: $id) {
+    id
   }
 }

@@ -25,7 +25,12 @@ import {
   WorkspaceFooter,
 } from './style'
 
-export default function Workspace({ workspaceId, isOwner }: { workspaceId: string; isOwner: boolean }) {
+interface Props {
+  workspaceId: string
+  isOwner: boolean
+}
+
+export default function Workspace({ workspaceId, isOwner }: Props) {
   const history = useHistory()
   const { data, refetch: refetchWorkspace } = useGetWorkspaceByIdQuery({ variables: { id: workspaceId } })
   const [updateListMutation] = useUpdateTodoListMutation()
@@ -43,7 +48,7 @@ export default function Workspace({ workspaceId, isOwner }: { workspaceId: strin
 
   useEffect(() => {
     refetchWorkspace()
-  }, [refetchWorkspace])
+  }, [refetchWorkspace, workspaceId])
 
   return (
     <>
