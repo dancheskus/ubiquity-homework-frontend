@@ -203,6 +203,18 @@ mutation CreateTodoItem(
   }
 }
 
+subscription TodoItemCreated($todoListId: String!) {
+  createTodoItem(todoListId: $todoListId) {
+    id
+    title
+    isLocked
+    workspaceId
+    todoItems {
+      id
+    }
+  }
+}
+
 query GetTodoItemByIdQuery($id: String!) {
   todoItem(id: $id) {
     id
@@ -213,9 +225,21 @@ query GetTodoItemByIdQuery($id: String!) {
   }
 }
 
-mutation DeleteTodoItem($todoItemId: String!) {
-  deleteTodoItem(id: $todoItemId) {
+mutation DeleteTodoItem($todoItemId: String!, $todoListId: String!) {
+  deleteTodoItem(id: $todoItemId, todoListId: $todoListId) {
     id
+  }
+}
+
+subscription TodoItemDeleted($todoListId: String!) {
+  deleteTodoItem(todoListId: $todoListId) {
+    id
+    title
+    isLocked
+    workspaceId
+    todoItems {
+      id
+    }
   }
 }
 

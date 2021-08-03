@@ -4,6 +4,8 @@ import {
   useDeleteTodoItemMutation,
   useGetTodoItemByIdQueryLazyQuery,
   useGetTodoListByIdLazyQuery,
+  useTodoItemCreatedSubscription,
+  useTodoItemDeletedSubscription,
   useTodoItemUpdatedSubscription,
   useUpdateTodoItemMutation,
 } from 'generated/graphql'
@@ -31,6 +33,9 @@ export default function TodoItem({ todoListId, todoItem }: Props) {
   const [refetchTodoItem] = useGetTodoItemByIdQueryLazyQuery({ variables: { id }, fetchPolicy: 'network-only' })
   const [deleteTodoItemMutation] = useDeleteTodoItemMutation({ onCompleted: () => refetchTodoList() })
   useTodoItemUpdatedSubscription({ variables: { id }, onSubscriptionData: () => refetchTodoItem() })
+  useTodoItemCreatedSubscription({ variables: { todoListId }, onSubscriptionData: () => refetchTodoList() })
+  useTodoItemDeletedSubscription({ variables: { todoListId }, onSubscriptionData: () => refetchTodoList() })
+
   const updateTodo = (variables: Omit<UpdateTodoItemMutationVariables, 'todoItemId'>) => {
     updateTodoItemMutation({ variables: { todoItemId: id, ...variables } })
   }
@@ -63,7 +68,7 @@ export default function TodoItem({ todoListId, todoItem }: Props) {
           {description !== null ? 'Remove description' : 'Add description'}
         </TodoItemActionButton>
 
-        <TodoItemActionButton onClick={() => deleteTodoItemMutation({ variables: { todoItemId: id } })}>
+        <TodoItemActionButton onClick={() => deleteTodoItemMutation({ variables: { todoItemId: id, todoListId } })}>
           Remove TODO
         </TodoItemActionButton>
       </TodoItemActions>
