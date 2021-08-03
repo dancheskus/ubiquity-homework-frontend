@@ -1,0 +1,19 @@
+services:
+  todo:
+    container_name: ${PROJ_NAME}
+    build: .
+    restart: always
+    environment:
+      NODE_ENV: production
+    ports: [3000]
+    labels:
+      - "traefik.http.routers.${PROJ_NAME}.rule=Host(`${REACT_APP_DOMAIN}`)"
+      - "traefik.http.routers.${PROJ_NAME}.entrypoints=websecure"
+      - "traefik.http.routers.${PROJ_NAME}.tls.certresolver=myresolver"
+      - "traefik.http.routers.${PROJ_NAME}.tls.domains[0].main=${REACT_APP_DOMAIN}"
+      - "traefik.http.routers.${PROJ_NAME}.tls.domains[0].sans=www.${REACT_APP_DOMAIN}"
+
+networks:
+  default:
+    external:
+      name: traefik
