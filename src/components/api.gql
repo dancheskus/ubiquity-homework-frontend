@@ -171,6 +171,18 @@ mutation UpdateTodoList(
   }
 }
 
+subscription TodoListUpdated($id: String!) {
+  updateTodoList(id: $id) {
+    id
+    title
+    isLocked
+    workspaceId
+    todoItems {
+      id
+    }
+  }
+}
+
 mutation CreateTodoItem(
   $todoItemTitle: String!
   $todoItemTodoListId: String!

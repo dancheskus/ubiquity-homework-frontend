@@ -31,7 +31,6 @@ export default function TodoItem({ todoListId, todoItem }: Props) {
   const [refetchTodoItem] = useGetTodoItemByIdQueryLazyQuery({ variables: { id }, fetchPolicy: 'network-only' })
   const [deleteTodoItemMutation] = useDeleteTodoItemMutation({ onCompleted: () => refetchTodoList() })
   useTodoItemUpdatedSubscription({ variables: { id }, onSubscriptionData: () => refetchTodoItem() })
-
   const updateTodo = (variables: Omit<UpdateTodoItemMutationVariables, 'todoItemId'>) => {
     updateTodoItemMutation({ variables: { todoItemId: id, ...variables } })
   }
