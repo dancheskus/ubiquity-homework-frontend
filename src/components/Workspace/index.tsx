@@ -10,6 +10,7 @@ import {
   useGetUserLazyQuery,
   useGetWorkspaceByIdQuery,
   useTodoListCreatedSubscription,
+  useTodoListDeletedSubscription,
   useUpdateTodoListMutation,
 } from 'generated/graphql'
 import Button from 'style/Button'
@@ -26,15 +27,9 @@ import {
 
 export default function Workspace({ workspaceId, isOwner }: { workspaceId: string; isOwner: boolean }) {
   const history = useHistory()
-  const { data, refetch: refetchWorkspace } = useGetWorkspaceByIdQuery({
-    variables: { id: workspaceId },
-  })
-
-  useEffect(() => {
-    refetchWorkspace()
-  }, [refetchWorkspace])
+  const { data, refetch: refetchWorkspace } = useGetWorkspaceByIdQuery({ variables: { id: workspaceId } })
   const [updateListMutation] = useUpdateTodoListMutation()
-  const [deleteTodoListMutation] = useDeleteTodoListMutation({ onCompleted: () => refetchWorkspace() })
+  const [deleteTodoListMutation] = useDeleteTodoListMutation()
   const [createTodoListMutation] = useCreateTodoListMutation()
   const userId = getUserId()
   const [refetchUser] = useGetUserLazyQuery({
@@ -44,6 +39,11 @@ export default function Workspace({ workspaceId, isOwner }: { workspaceId: strin
   })
   const [deleteWorkspaceMutation] = useDeleteWorkspaceMutation({ onCompleted: () => refetchUser() })
   useTodoListCreatedSubscription({ variables: { workspaceId }, onSubscriptionData: () => refetchWorkspace() })
+  useTodoListDeletedSubscription({ variables: { workspaceId }, onSubscriptionData: () => refetchWorkspace() })
+
+  useEffect(() => {
+    refetchWorkspace()
+  }, [refetchWorkspace])
 
   return (
     <>
@@ -59,7 +59,9 @@ export default function Workspace({ workspaceId, isOwner }: { workspaceId: strin
                   }
                 />
               )}
-              <RemoveTodoListButton onClick={() => deleteTodoListMutation({ variables: { todoListId: id } })}>
+              <RemoveTodoListButton
+                onClick={() => deleteTodoListMutation({ variables: { todoListId: id, workspaceId } })}
+              >
                 Remove
               </RemoveTodoListButton>
             </TodoListHeader>

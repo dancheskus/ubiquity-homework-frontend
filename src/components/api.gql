@@ -142,8 +142,14 @@ subscription TodoListCreated($workspaceId: String!) {
   }
 }
 
-mutation DeleteTodoList($todoListId: String!) {
-  deleteTodoList(id: $todoListId) {
+mutation DeleteTodoList($todoListId: String!, $workspaceId: String!) {
+  deleteTodoList(todoListId: $todoListId, workspaceId: $workspaceId) {
+    id
+  }
+}
+
+subscription TodoListDeleted($workspaceId: String!) {
+  deleteTodoList(workspaceId: $workspaceId) {
     id
   }
 }
