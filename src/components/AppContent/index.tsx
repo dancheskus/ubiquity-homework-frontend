@@ -1,6 +1,5 @@
 import { useHistory, useLocation } from 'react-router-dom'
 
-import useCreateUserIfNeeded from 'customHooks/useCreateUserIfNeeded'
 import { getUserId } from 'utils/apolloClient'
 import {
   useCreateWorkspaceMutation,
@@ -21,7 +20,6 @@ import {
 } from './style'
 
 export default function AppContent() {
-  useCreateUserIfNeeded()
   const currentUserId = getUserId()
   const { data: user } = useGetUserQuery({ variables: { userId: currentUserId } })
   const [refetchUser] = useGetUsersLazyQuery({ fetchPolicy: 'network-only' })

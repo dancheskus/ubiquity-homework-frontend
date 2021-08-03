@@ -5,6 +5,7 @@ import GlobalStyle from 'style/GlobalStyle'
 import { getApolloClient, getUserId } from 'utils/apolloClient'
 
 import AppContent from './AppContent'
+import RequireUser from './RequireUser'
 
 export default function App() {
   return (
@@ -12,7 +13,9 @@ export default function App() {
       <BrowserRouter>
         <GlobalStyle />
 
-        <AppContent />
+        <RequireUser>
+          <AppContent />
+        </RequireUser>
       </BrowserRouter>
     </ApolloProvider>
   )
