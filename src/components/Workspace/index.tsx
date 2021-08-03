@@ -81,13 +81,13 @@ export default function Workspace({ workspaceId, isOwner }: Props) {
           <>
             <Button onClick={() => deleteWorkspaceMutation({ variables: { workspaceId } })}>Remove Workspace</Button>
 
-            <Button
+            {/* <Button
               onClick={() => {
                 console.log('lock')
               }}
             >
               Lock Workspace
-            </Button>
+            </Button> */}
           </>
         )}
 
