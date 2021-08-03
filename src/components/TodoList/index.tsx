@@ -16,7 +16,7 @@ interface Props {
 
 export default function TodoList({ todoItems, todoListId }: Props) {
   const [refetchTodoList] = useGetTodoListByIdLazyQuery({ variables: { todoListId }, fetchPolicy: 'network-only' })
-  const [createTodoItemMutation] = useCreateTodoItemMutation({ onCompleted: () => refetchTodoList() })
+  const [createTodoItemMutation] = useCreateTodoItemMutation()
   useTodoListUpdatedSubscription({ variables: { id: todoListId }, onSubscriptionData: () => refetchTodoList() })
 
   return (

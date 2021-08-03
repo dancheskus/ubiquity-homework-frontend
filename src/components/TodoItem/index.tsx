@@ -4,7 +4,6 @@ import {
   useDeleteTodoItemMutation,
   useGetTodoItemByIdQueryLazyQuery,
   useGetTodoListByIdLazyQuery,
-  useTodoItemCreatedSubscription,
   useTodoItemDeletedSubscription,
   useTodoItemUpdatedSubscription,
   useUpdateTodoItemMutation,
@@ -33,7 +32,6 @@ export default function TodoItem({ todoListId, todoItem }: Props) {
   const [refetchTodoItem] = useGetTodoItemByIdQueryLazyQuery({ variables: { id }, fetchPolicy: 'network-only' })
   const [deleteTodoItemMutation] = useDeleteTodoItemMutation({ onCompleted: () => refetchTodoList() })
   useTodoItemUpdatedSubscription({ variables: { id }, onSubscriptionData: () => refetchTodoItem() })
-  useTodoItemCreatedSubscription({ variables: { todoListId }, onSubscriptionData: () => refetchTodoList() })
   useTodoItemDeletedSubscription({ variables: { todoListId }, onSubscriptionData: () => refetchTodoList() })
 
   const updateTodo = (variables: Omit<UpdateTodoItemMutationVariables, 'todoItemId'>) => {

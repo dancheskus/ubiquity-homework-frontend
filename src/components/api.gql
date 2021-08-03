@@ -203,18 +203,6 @@ mutation CreateTodoItem(
   }
 }
 
-subscription TodoItemCreated($todoListId: String!) {
-  createTodoItem(todoListId: $todoListId) {
-    id
-    title
-    isLocked
-    workspaceId
-    todoItems {
-      id
-    }
-  }
-}
-
 query GetTodoItemByIdQuery($id: String!) {
   todoItem(id: $id) {
     id
