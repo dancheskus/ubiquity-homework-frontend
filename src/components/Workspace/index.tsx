@@ -1,17 +1,20 @@
 import { CopyToClipboard } from 'react-copy-to-clipboard'
+import { useHistory } from 'react-router-dom'
+import { useEffect } from 'react'
 
 import TodoList from 'components/TodoList'
 import {
   useCreateTodoListMutation,
   useDeleteTodoListMutation,
   useDeleteWorkspaceMutation,
-  useGetUsersLazyQuery,
-  useGetWorkspaceByIdLazyQuery,
+  useGetUserLazyQuery,
+  useGetWorkspaceByIdQuery,
+  useTodoListCreatedSubscription,
   useUpdateTodoListMutation,
 } from 'generated/graphql'
 import Button from 'style/Button'
+import { getUserId } from 'utils/apolloClient'
 
-import { PartialTodoList } from '../types'
 import {
   TodoListsContainer,
   TodoListWrapper,
@@ -21,21 +24,31 @@ import {
   WorkspaceFooter,
 } from './style'
 
-export default function Workspace({ workspaceId, todoLists }: { todoLists: PartialTodoList[]; workspaceId: string }) {
-  const [refetchWorkspace] = useGetWorkspaceByIdLazyQuery({
+export default function Workspace({ workspaceId, isOwner }: { workspaceId: string; isOwner: boolean }) {
+  const history = useHistory()
+  const { data, refetch: refetchWorkspace } = useGetWorkspaceByIdQuery({
     variables: { id: workspaceId },
-    fetchPolicy: 'network-only',
   })
-  const [refetchUser] = useGetUsersLazyQuery({ fetchPolicy: 'network-only' })
+
+  useEffect(() => {
+    refetchWorkspace()
+  }, [refetchWorkspace])
   const [updateListMutation] = useUpdateTodoListMutation()
   const [deleteTodoListMutation] = useDeleteTodoListMutation({ onCompleted: () => refetchWorkspace() })
-  const [createTodoListMutation] = useCreateTodoListMutation({ onCompleted: () => refetchWorkspace() })
+  const [createTodoListMutation] = useCreateTodoListMutation()
+  const userId = getUserId()
+  const [refetchUser] = useGetUserLazyQuery({
+    variables: { userId },
+    fetchPolicy: 'network-only',
+    onCompleted: () => history.push('/'),
+  })
   const [deleteWorkspaceMutation] = useDeleteWorkspaceMutation({ onCompleted: () => refetchUser() })
+  useTodoListCreatedSubscription({ variables: { workspaceId }, onSubscriptionData: () => refetchWorkspace() })
 
   return (
     <>
       <TodoListsContainer>
-        {todoLists.map(({ id, title, todoItems }) => (
+        {data?.getWorkspace?.todoLists?.map(({ id, title, todoItems }) => (
           <TodoListWrapper key={id}>
             <TodoListHeader>
               {title && (
@@ -57,7 +70,23 @@ export default function Workspace({ workspaceId, todoLists }: { todoLists: Parti
       </TodoListsContainer>
 
       <WorkspaceFooter>
-        <Button onClick={() => deleteWorkspaceMutation({ variables: { workspaceId } })}>Remove Workspace</Button>
+        {isOwner && (
+          <>
+            <Button onClick={() => deleteWorkspaceMutation({ variables: { workspaceId } })}>Remove Workspace</Button>
+
+            <Button
+              onClick={() => {
+                console.log('lock')
+              }}
+            >
+              Lock Workspace
+            </Button>
+          </>
+        )}
+
+        <CopyToClipboard text={window.location.href}>
+          <Button>Copy Workspace Link</Button>
+        </CopyToClipboard>
 
         <Button
           onClick={() => {
@@ -70,18 +99,6 @@ export default function Workspace({ workspaceId, todoLists }: { todoLists: Parti
         >
           Add Todo List
         </Button>
-
-        <Button
-          onClick={() => {
-            console.log('lock')
-          }}
-        >
-          Lock Workspace
-        </Button>
-
-        <CopyToClipboard text={window.location.href}>
-          <Button>Copy Workspace Link</Button>
-        </CopyToClipboard>
       </WorkspaceFooter>
     </>
   )

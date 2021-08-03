@@ -21,7 +21,7 @@ import {
 } from './style'
 
 export default function TodoList({ todoItems, todoListId }: { todoItems: PartialTodoItem[]; todoListId: string }) {
-  const [refetchTodoList, {}] = useGetTodoListByIdLazyQuery({ variables: { todoListId }, fetchPolicy: 'network-only' })
+  const [refetchTodoList] = useGetTodoListByIdLazyQuery({ variables: { todoListId }, fetchPolicy: 'network-only' })
   const [updateTodoMutation] = useUpdateTodoItemMutation()
   const [deleteTodoMutation] = useDeleteTodoItemMutation({ onCompleted: () => refetchTodoList() })
   const [createTodoItemMutation] = useCreateTodoItemMutation({ onCompleted: () => refetchTodoList() })

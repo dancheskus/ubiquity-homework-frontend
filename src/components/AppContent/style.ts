@@ -29,11 +29,18 @@ export const Sidebar = styled.section`
   flex-direction: column;
   justify-content: space-between;
 `
-export const SidebarWorkspaceButton = styled.div<{ active?: boolean }>`
-  ${({ active }) => css`
-    background: ${active ? '#a4a4c7' : '#8282be'};
+export const SidebarWorkspaceButton = styled.div<{ active?: boolean; shared?: boolean }>`
+  ${({ active, shared }) => css`
+    ${shared
+      ? css`
+          background: #8cd9b1;
+          color: #638cca;
+        `
+      : css`
+          background: ${active ? '#a4a4c7' : '#8282be'};
+          color: #fff;
+        `}
     padding: 3rem;
-    color: white;
     transition: 0.2s;
 
     ${!active &&

@@ -109,6 +109,13 @@ query GetWorkspaceById($id: String!) {
       title
       isLocked
       workspaceId
+      todoItems {
+        id
+        description
+        cost
+        isCompleted
+        title
+      }
     }
   }
 }
@@ -126,6 +133,12 @@ mutation CreateTodoList($todoListWorkspaceId: String!, $todoListTitle: String) {
     id
     title
     isLocked
+  }
+}
+
+subscription TodoListCreated($workspaceId: String!) {
+  createTodoList(workspaceId: $workspaceId) {
+    id
   }
 }
 

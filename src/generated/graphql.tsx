@@ -87,7 +87,7 @@ export type MutationUpdateWorkspaceArgs = {
 
 export type Query = {
   __typename?: 'Query';
-  getWorkspace: Workspace;
+  getWorkspace?: Maybe<Workspace>;
   todoList: TodoList;
   todoLists: Array<TodoList>;
   user?: Maybe<User>;
@@ -112,6 +112,16 @@ export type QueryTodoListsArgs = {
 
 export type QueryUserArgs = {
   id: Scalars['String'];
+};
+
+export type Subscription = {
+  __typename?: 'Subscription';
+  createTodoList?: Maybe<TodoList>;
+};
+
+
+export type SubscriptionCreateTodoListArgs = {
+  workspaceId: Scalars['String'];
 };
 
 export type TodoItem = {
@@ -272,14 +282,18 @@ export type GetWorkspaceByIdQueryVariables = Exact<{
 
 export type GetWorkspaceByIdQuery = (
   { __typename?: 'Query' }
-  & { getWorkspace: (
+  & { getWorkspace?: Maybe<(
     { __typename?: 'Workspace' }
     & Pick<Workspace, 'id' | 'title' | 'isShared' | 'ownerId'>
     & { todoLists: Array<(
       { __typename?: 'TodoList' }
       & Pick<TodoList, 'id' | 'title' | 'isLocked' | 'workspaceId'>
+      & { todoItems: Array<(
+        { __typename?: 'TodoItem' }
+        & Pick<TodoItem, 'id' | 'description' | 'cost' | 'isCompleted' | 'title'>
+      )> }
     )> }
-  ) }
+  )> }
 );
 
 export type GetTodoListsByWorkspaceQueryVariables = Exact<{
@@ -307,6 +321,19 @@ export type CreateTodoListMutation = (
     { __typename?: 'TodoList' }
     & Pick<TodoList, 'id' | 'title' | 'isLocked'>
   ) }
+);
+
+export type TodoListCreatedSubscriptionVariables = Exact<{
+  workspaceId: Scalars['String'];
+}>;
+
+
+export type TodoListCreatedSubscription = (
+  { __typename?: 'Subscription' }
+  & { createTodoList?: Maybe<(
+    { __typename?: 'TodoList' }
+    & Pick<TodoList, 'id'>
+  )> }
 );
 
 export type DeleteTodoListMutationVariables = Exact<{
@@ -579,7 +606,7 @@ export function useGetTodoListByIdLazyQuery(baseOptions?: Apollo.LazyQueryHookOp
 export type GetTodoListByIdQueryHookResult = ReturnType<typeof useGetTodoListByIdQuery>;
 export type GetTodoListByIdLazyQueryHookResult = ReturnType<typeof useGetTodoListByIdLazyQuery>;
 export type GetTodoListByIdQueryResult = Apollo.QueryResult<GetTodoListByIdQuery, GetTodoListByIdQueryVariables>;
-export const GetWorkspaceByIdDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"GetWorkspaceById"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"id"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"getWorkspace"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"id"},"value":{"kind":"Variable","name":{"kind":"Name","value":"id"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"title"}},{"kind":"Field","name":{"kind":"Name","value":"isShared"}},{"kind":"Field","name":{"kind":"Name","value":"ownerId"}},{"kind":"Field","name":{"kind":"Name","value":"todoLists"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"title"}},{"kind":"Field","name":{"kind":"Name","value":"isLocked"}},{"kind":"Field","name":{"kind":"Name","value":"workspaceId"}}]}}]}}]}}]} as unknown as DocumentNode;
+export const GetWorkspaceByIdDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"GetWorkspaceById"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"id"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"getWorkspace"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"id"},"value":{"kind":"Variable","name":{"kind":"Name","value":"id"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"title"}},{"kind":"Field","name":{"kind":"Name","value":"isShared"}},{"kind":"Field","name":{"kind":"Name","value":"ownerId"}},{"kind":"Field","name":{"kind":"Name","value":"todoLists"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"title"}},{"kind":"Field","name":{"kind":"Name","value":"isLocked"}},{"kind":"Field","name":{"kind":"Name","value":"workspaceId"}},{"kind":"Field","name":{"kind":"Name","value":"todoItems"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"description"}},{"kind":"Field","name":{"kind":"Name","value":"cost"}},{"kind":"Field","name":{"kind":"Name","value":"isCompleted"}},{"kind":"Field","name":{"kind":"Name","value":"title"}}]}}]}}]}}]}}]} as unknown as DocumentNode;
 
 /**
  * __useGetWorkspaceByIdQuery__
@@ -665,6 +692,30 @@ export function useCreateTodoListMutation(baseOptions?: Apollo.MutationHookOptio
 export type CreateTodoListMutationHookResult = ReturnType<typeof useCreateTodoListMutation>;
 export type CreateTodoListMutationResult = Apollo.MutationResult<CreateTodoListMutation>;
 export type CreateTodoListMutationOptions = Apollo.BaseMutationOptions<CreateTodoListMutation, CreateTodoListMutationVariables>;
+export const TodoListCreatedDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"subscription","name":{"kind":"Name","value":"TodoListCreated"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"workspaceId"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"createTodoList"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"workspaceId"},"value":{"kind":"Variable","name":{"kind":"Name","value":"workspaceId"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}}]}}]}}]} as unknown as DocumentNode;
+
+/**
+ * __useTodoListCreatedSubscription__
+ *
+ * To run a query within a React component, call `useTodoListCreatedSubscription` and pass it any options that fit your needs.
+ * When your component renders, `useTodoListCreatedSubscription` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the subscription, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useTodoListCreatedSubscription({
+ *   variables: {
+ *      workspaceId: // value for 'workspaceId'
+ *   },
+ * });
+ */
+export function useTodoListCreatedSubscription(baseOptions: Apollo.SubscriptionHookOptions<TodoListCreatedSubscription, TodoListCreatedSubscriptionVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useSubscription<TodoListCreatedSubscription, TodoListCreatedSubscriptionVariables>(TodoListCreatedDocument, options);
+      }
+export type TodoListCreatedSubscriptionHookResult = ReturnType<typeof useTodoListCreatedSubscription>;
+export type TodoListCreatedSubscriptionResult = Apollo.SubscriptionResult<TodoListCreatedSubscription>;
 export const DeleteTodoListDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"DeleteTodoList"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"todoListId"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"deleteTodoList"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"id"},"value":{"kind":"Variable","name":{"kind":"Name","value":"todoListId"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}}]}}]}}]} as unknown as DocumentNode;
 export type DeleteTodoListMutationFn = Apollo.MutationFunction<DeleteTodoListMutation, DeleteTodoListMutationVariables>;
 
@@ -828,5 +879,8 @@ export const namedOperations = {
     CreateTodoItem: 'CreateTodoItem',
     DeleteTodoItem: 'DeleteTodoItem',
     UpdateTodoItem: 'UpdateTodoItem'
+  },
+  Subscription: {
+    TodoListCreated: 'TodoListCreated'
   }
 }

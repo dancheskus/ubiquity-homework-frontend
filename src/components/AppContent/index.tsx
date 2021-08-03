@@ -2,7 +2,12 @@ import { useHistory, useLocation } from 'react-router-dom'
 
 import useCreateUserIfNeeded from 'customHooks/useCreateUserIfNeeded'
 import { getUserId } from 'utils/apolloClient'
-import { useCreateWorkspaceMutation, useGetUserQuery, useGetUsersLazyQuery } from 'generated/graphql'
+import {
+  useCreateWorkspaceMutation,
+  useGetUserQuery,
+  useGetUsersLazyQuery,
+  useGetWorkspaceByIdQuery,
+} from 'generated/graphql'
 import Workspace from 'components/Workspace'
 import PlusIcon from 'icons'
 
@@ -17,15 +22,22 @@ import {
 
 export default function AppContent() {
   useCreateUserIfNeeded()
+  const currentUserId = getUserId()
+  const { data: user } = useGetUserQuery({ variables: { userId: currentUserId } })
   const [refetchUser] = useGetUsersLazyQuery({ fetchPolicy: 'network-only' })
   const [createWorkspaceMutation] = useCreateWorkspaceMutation({ onCompleted: () => refetchUser() })
   const history = useHistory()
   const location = useLocation()
   const [, activeWorkspaceId] = location.pathname.match(/\/workspace\/(.+)/) ?? []
+  const { data: currentWorkspaceData } = useGetWorkspaceByIdQuery({ variables: { id: activeWorkspaceId ?? '' } })
 
-  const currentUserId = getUserId()
   const { data } = useGetUserQuery({ variables: { userId: currentUserId } })
-  const currentWorkspaceTodoLists = data?.user?.workspaces.find(({ id }) => id === activeWorkspaceId)?.todoLists
+
+  const currentWorkspace = currentWorkspaceData?.getWorkspace
+
+  const currentWorkspaceTodoLists = currentWorkspace?.todoLists
+
+  const isOwner = !!user?.user?.workspaces.find(({ id }) => id === activeWorkspaceId)
 
   return (
     <AppContentStyle>
@@ -37,6 +49,17 @@ export default function AppContent() {
 
       <Sidebar>
         <div>
+          {!isOwner && currentWorkspace && (
+            <SidebarWorkspaceButton
+              shared
+              onClick={() => history.push(`/workspace/${currentWorkspace.id}`)}
+              active={activeWorkspaceId === currentWorkspace.id}
+              key={currentWorkspace.id}
+            >
+              {currentWorkspace.title}
+            </SidebarWorkspaceButton>
+          )}
+
           {data?.user?.workspaces?.map(({ id, title }) => (
             <SidebarWorkspaceButton
               onClick={() => history.push(`/workspace/${id}`)}
@@ -61,9 +84,7 @@ export default function AppContent() {
       </Sidebar>
 
       <MainContent>
-        {currentWorkspaceTodoLists && (
-          <Workspace workspaceId={activeWorkspaceId} todoLists={currentWorkspaceTodoLists} />
-        )}
+        {currentWorkspaceTodoLists && <Workspace isOwner={isOwner} workspaceId={activeWorkspaceId} />}
       </MainContent>
     </AppContentStyle>
   )
